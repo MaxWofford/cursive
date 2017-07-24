@@ -14,27 +14,27 @@ function init() {
   }
   window.onresize()
 
-  const dot = new Pen(10, 10, canvas)
-  dot.move()
+  const pen = new Pen(10, 10, canvas)
+  pen.move()
 
   setInterval(() => {
     // If it's off the page we should bounce back onto it
-    if (dot.position.x > canvas.width ||
-        dot.position.x < 0 ||
-        dot.position.y > canvas.height ||
-        dot.position.y < 0) {
+    if (pen.position.x > canvas.width ||
+        pen.position.x < 0 ||
+        pen.position.y > canvas.height ||
+        pen.position.y < 0) {
       var centerPoint = {
         x: canvas.width / 2,
         y: canvas.height / 2
       }
-      dot.rotation = Math.atan2(centerPoint.y - dot.position.y, centerPoint.x - dot.position.x)
+      pen.rotation = Math.atan2(centerPoint.y - pen.position.y, centerPoint.x - pen.position.x)
     }
 
     // Every second we'll change the direction the line is heading
-    dot.targetDirection = (Math.random() - 0.5) * chaoticness
+    pen.targetDirection = (Math.random() - 0.5) * chaoticness
   }, 1000)
   setInterval(() => {
-    dot.move()
+    pen.move()
   }, 10)
 }
 
