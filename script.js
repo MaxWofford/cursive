@@ -1,6 +1,7 @@
 'use strict'
 
-const chaoticness = 3
+const chaoticness = 5
+const minThickness = 0.5
 
 function init() {
   const root = document.querySelector('.root')
@@ -17,6 +18,7 @@ function init() {
   dot.move()
 
   setInterval(() => {
+    // If it's off the page we should bounce back onto it
     if (dot.position.x > canvas.width ||
         dot.position.x < 0 ||
         dot.position.y > canvas.height ||
@@ -27,9 +29,9 @@ function init() {
       }
       dot.rotation = Math.atan2(centerPoint.y - dot.position.y, centerPoint.x - dot.position.x)
     }
-    console.log(dot.targetDirection)
-    var newDirection = (Math.random() - 0.5) * chaoticness
-    dot.targetDirection = newDirection
+
+    // Every second we'll change the direction the line is heading
+    dot.targetDirection = (Math.random() - 0.5) * chaoticness
   }, 1000)
   setInterval(() => {
     dot.move()
@@ -67,9 +69,16 @@ class Pen {
   }
 
   draw() {
-    this.ctx.fillRect(this.position.x, this.position.y, this.size, this.size)
-    this.ctx.fillRect(this.position.x, this.canvas.width - this.position.y, this.size, this.size)
-    this.ctx.fillRect(this.canvas.width - this.position.x, this.position.y, this.size, this.size)
-    this.ctx.fillRect(this.canvas.width - this.position.x, this.canvas.width - this.position.y, this.size, this.size)
+    this.size = Math.max(Math.abs(this.rotation), minThickness)
+    this.drawCircle(this.position.x, this.position.y, this.size)
+    this.drawCircle(this.position.x, this.canvas.width - this.position.y, this.size)
+    this.drawCircle(this.canvas.width - this.position.x, this.position.y, this.size)
+    this.drawCircle(this.canvas.width - this.position.x, this.canvas.width - this.position.y, this.size)
+  }
+
+  drawCircle(x, y, size) {
+    this.ctx.beginPath();
+    this.ctx.arc(x, y, size, 0, 2 * Math.PI, true);
+    this.ctx.fill();
   }
 }
