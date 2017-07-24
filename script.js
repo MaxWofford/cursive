@@ -1,6 +1,6 @@
 'use strict'
 
-const acceleration = 10
+const chaoticness = 3
 
 function init() {
   const root = document.querySelector('.root')
@@ -17,7 +17,6 @@ function init() {
   dot.move()
 
   setInterval(() => {
-    var newDirection = Math.random() - 0.5
     if (dot.position.x > canvas.width ||
         dot.position.x < 0 ||
         dot.position.y > canvas.height ||
@@ -26,10 +25,11 @@ function init() {
         x: canvas.width / 2,
         y: canvas.height / 2
       }
-      newDirection = Math.atan2(dot.position.y - centerPoint.y, dot.position.x, centerPoint.x)
+      dot.rotation = Math.atan2(centerPoint.y - dot.position.y, centerPoint.x - dot.position.x)
     }
-    dot.setDirection(newDirection)
     console.log(dot.targetDirection)
+    var newDirection = (Math.random() - 0.5) * chaoticness
+    dot.targetDirection = newDirection
   }, 1000)
   setInterval(() => {
     dot.move()
@@ -50,20 +50,14 @@ class Pen {
     this.velocity.y = 0
     this.amplitude = 1
 
-    this.rotation = Math.random() * 360
-    this.direction = 0.01
-    this.targetDirection = 0
+    this.rotation = 0.01 // this is the amount it rotates per tick
+    this.targetDirection = 0 // this is the direction it tries to aim for
 
     this.size = 1
   }
 
-  setDirection(dir) {
-    this.targetDirection = dir
-  }
-
   move() {
-    this.direction += (this.targetDirection - this.direction) / 100
-    this.rotation += Math.random() * this.direction
+    this.rotation += (this.targetDirection - this.rotation) / 100
     this.velocity.x = Math.cos(this.rotation) * this.amplitude
     this.velocity.y = Math.sin(this.rotation) * this.amplitude
 
